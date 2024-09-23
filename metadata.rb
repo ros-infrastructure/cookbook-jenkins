@@ -1,8 +1,8 @@
 name 'jenkins'
-maintainer 'Open Source Robotics Foundation'
-maintainer_email 'you@example.com'
+maintainer 'Open Robotics Infrastructure'
+maintainer_email 'steven+openrobotics@nuclearsandwich.com'
 license 'Apache-2.0'
-description 'Installs/Configures jenkins'
+description 'Installs/Configures jenkins on Debian-derived systems'
 version '0.1.0'
 chef_version '>= 16.0'
 
