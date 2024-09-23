@@ -19,6 +19,7 @@ platforms:
 suites:
   - name: default
     run_list:
+      - recipe[jenkins::temurin]
       - recipe[jenkins::default]
     verifier:
       inspec_tests:
