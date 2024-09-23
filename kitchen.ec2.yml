@@ -1,0 +1,11 @@
+---
+driver:
+  name: ec2
+  subnet_filter:
+    tag: "test_kitchen_target"
+    value: "true"
+  instance_type: t3.medium
+  # To use this driver you need to:
+  # * have a subnet matching the above filter
+  # * specify a keypair name in the environment variable AWS_SSH_KEY_ID
+  # * specify a region in the AWS_REGION environment variable
