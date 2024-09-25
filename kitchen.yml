@@ -21,6 +21,7 @@ suites:
     run_list:
       - recipe[jenkins::temurin]
       - recipe[jenkins::jenkins]
+      - recipe[jenkins::plugin_manager]
     verifier:
       inspec_tests:
         - test/integration/default
