@@ -20,7 +20,7 @@ suites:
   - name: default
     run_list:
       - recipe[jenkins::temurin]
-      - recipe[jenkins::default]
+      - recipe[jenkins::jenkins]
     verifier:
       inspec_tests:
         - test/integration/default

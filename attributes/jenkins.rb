@@ -1,0 +1,1 @@
+default["jenkins"]["lts"] = true
