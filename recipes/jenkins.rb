@@ -33,7 +33,7 @@ end
 if node['jenkins']['java_opts']
   directory '/etc/systemd/system/jenkins.service.d'
   template '/etc/systemd/system/jenkins.service.d/override.conf' do
-    source 'jenkins-service-ovverride.conf.erb'
+    source 'jenkins-service-override.conf.erb'
     owner 'jenkins'
     group 'jenkins'
     variables Hash[
