@@ -39,7 +39,7 @@ if java_opts
     owner 'jenkins'
     group 'jenkins'
     variables Hash[
-      java_opts: node['jenkins']['java_opts']
+      java_opts: java_opts
     ]
   end
 end
