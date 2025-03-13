@@ -31,16 +31,24 @@ apt_update "jenkins" do
 end
 
 if node.exist?('jenkins', 'master', 'java_opts')
+  execute "systemctl-daemon-reload" do
+    command "systemctl daemon-reload"
+    action :nothing
+  end
+
+  service "jenkins" do
+    action :nothing
+  end
 
   java_opts =  node['jenkins']['master']['java_opts']
   directory '/etc/systemd/system/jenkins.service.d'
   template '/etc/systemd/system/jenkins.service.d/override.conf' do
     source 'jenkins-service-override.conf.erb'
-    owner 'jenkins'
-    group 'jenkins'
     variables Hash[
       java_opts: java_opts
     ]
+    notifies :run, "execute[systemctl-daemon-reload]", :immediately
+    notifies :restart, "service[jenkins]", :delayed
   end
 end
 
