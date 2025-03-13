@@ -30,7 +30,9 @@ apt_update "jenkins" do
   action :nothing
 end
 
-if node['jenkins']['java_opts']
+java_opts =  node['jenkins']['master']['java_opts']
+
+if java_opts
   directory '/etc/systemd/system/jenkins.service.d'
   template '/etc/systemd/system/jenkins.service.d/override.conf' do
     source 'jenkins-service-override.conf.erb'
