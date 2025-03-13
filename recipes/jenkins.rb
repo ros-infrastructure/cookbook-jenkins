@@ -31,6 +31,14 @@ apt_update "jenkins" do
 end
 
 if node.exist?('jenkins', 'master', 'java_opts')
+  execute "systemctl-daemon-reload" do
+    command "systemctl daemon-reload"
+    action :nothing
+  end
+
+  service "jenkins" do
+    action :nothing
+  end
 
   java_opts =  node['jenkins']['master']['java_opts']
   directory '/etc/systemd/system/jenkins.service.d'
@@ -42,6 +50,8 @@ if node.exist?('jenkins', 'master', 'java_opts')
       java_opts: java_opts
     ]
   end
+  notifies :run, "execute[systemctl-daemon-reload]", :immediately
+  notifies :restart, "service[jenkins]", :delayed
 end
 
 package "jenkins"
