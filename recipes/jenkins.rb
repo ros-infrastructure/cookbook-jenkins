@@ -1,5 +1,5 @@
 execute 'jenkins-dearmor' do
-  command "gpg -o /etc/apt/keyrings/jenkins.gpg --dearmor < /tmp/jenkins.asc"
+  command "gpg --batch --no-tty -o /etc/apt/keyrings/jenkins.gpg --dearmor < /tmp/jenkins.asc"
   action :nothing
 end
 
