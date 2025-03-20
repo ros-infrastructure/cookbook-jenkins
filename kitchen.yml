@@ -15,7 +15,7 @@ platforms:
   - name: ubuntu-24.04
 
 suites:
-  - name: default
+  - name: jenkins-default
     run_list:
       - recipe[jenkins::temurin]
       - recipe[jenkins::jenkins]
@@ -25,7 +25,8 @@ suites:
       inspec_tests:
         - test/integration/default
     attributes:
-  - name: custom_java_opts
+
+  - name: jenkins-custom_java_opts
     run_list:
       - recipe[jenkins::temurin]
       - recipe[jenkins::jenkins]
