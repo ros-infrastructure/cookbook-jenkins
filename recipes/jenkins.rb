@@ -52,13 +52,11 @@ if node.exist?('jenkins', 'master', 'java_opts')
   end
 end
 
+package "jenkins"
+
 if node.exist?('jenkins', 'jenkins_java_opts')
   execute "systemctl-daemon-reload" do
     command "systemctl daemon-reload"
-    action :nothing
-  end
-
-  service "jenkins" do
     action :nothing
   end
 
@@ -74,4 +72,6 @@ if node.exist?('jenkins', 'jenkins_java_opts')
   end
 end
 
-package "jenkins"
+service 'jenkins' do
+  action [:enable, :start]
+end
