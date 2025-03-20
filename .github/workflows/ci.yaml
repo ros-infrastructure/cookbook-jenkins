@@ -31,12 +31,11 @@ jobs:
       - name: Check out sources
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       - name: Install Cinc
-        uses: actionshub/chef-install@776a917c09d87c381d1d5342f83cd554223fa49c  # v3.0.1
-        with:
+        run: |
+          curl -L https://omnitruck.cinc.sh/install.sh -o /tmp/install-cinc.sh
           # This is only the chef version used for installing chef workstation in the CI environment.
           # The chef version used in each configuration is configured in kitchen.dokken.yml.
-          version: 18
-          omnitruckUrl: omnitruck.cinc.sh
+          sudo sh /tmp/install-cinc.sh -c stable -P cinc-workstation -v 18
       - name: "Test Kitchen Converge"
         env:
           CHEF_VERSION: ${{ matrix.chef_version }}
