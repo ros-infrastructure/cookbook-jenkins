@@ -1,0 +1,45 @@
+---
+name: CI
+
+on:
+  pull_request:
+  push:
+    branch: ["latest"]
+
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+      - name: yamllint
+        uses: actionshub/yamllint@00f4f7f756a93a38e77ea1af41a46b48fd893dcd  # v1.8.3
+
+  kitchen:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-2404
+        chef_version:
+          - "17"
+          - "18"
+        suite:
+          - "jenkins-default"
+          - "jenkins-custom-java-opts"
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - name: Install Cinc
+        uses: actionshub/chef-install@776a917c09d87c381d1d5342f83cd554223fa49c  # v3.0.1
+        with:
+          # This is only the chef version used for installing chef workstation in the CI environment.
+          # The chef version used in each configuration is configured in kitchen.dokken.yml.
+          version: 18
+          omnitruckUrl: omnitruck.cinc.sh
+      - name: "Test Kitchen Converge"
+        env:
+          CHEF_VERSION: ${{ matrix.chef_version }}
+          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+        run: |
+          kitchen converge ${{ matrix.suite }}-${{ matrix.platform }}
