@@ -1,28 +1,18 @@
-execute 'jenkins-dearmor' do
-  command "gpg --batch --no-tty -o /etc/apt/keyrings/jenkins.gpg --dearmor < /tmp/jenkins.asc"
-  action :nothing
+repository = node["jenkins"]["lts"] ? "debian-stable" : "debian"
+
+directory '/etc/apt/keyrings' do
+  recursive true
 end
 
-if node["jenkins"]["lts"]
-  repository = "debian-stable"
-else
-  repository = "debian"
+remote_file "/etc/apt/keyrings/jenkins-keyring.asc" do
+  source "https://pkg.jenkins.io/#{repository}/jenkins.io-2026.key"
+  mode '0644'
+  owner 'root'
+  group 'root'
 end
 
-remote_file "/tmp/jenkins.asc" do
-  source "https://pkg.jenkins.io/#{repository}/jenkins.io-2023.key"
-
-  notifies :run, "execute[jenkins-dearmor]", :immediately
-end
-
-file "/etc/apt/sources.list.d/jenkins.sources" do
-  content <<~SOURCES
-  Types: deb
-  URIs: https://pkg.jenkins.io/#{repository}
-  Suites: binary/
-  Signed-By: /etc/apt/keyrings/jenkins.gpg
-  SOURCES
-
+file "/etc/apt/sources.list.d/jenkins.list" do
+  content "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/#{repository} binary/\n"
   notifies :update, "apt_update[jenkins]", :immediately
 end
 
