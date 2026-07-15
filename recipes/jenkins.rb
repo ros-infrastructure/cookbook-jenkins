@@ -42,7 +42,33 @@ if node.exist?('jenkins', 'master', 'java_opts')
   end
 end
 
-package "jenkins"
+# Jenkins downgrade protection
+#
+# apt will happily install whatever version is pinned in
+# node['jenkins']['master']['version'] (or the newest available, if unset).
+# Jenkins does not support downgrades, and some configurations continue
+# running even after a downgrade attempt corrupts the installation. Compare
+# against the version Ohai detects installed (dpkg's version string, with any
+# Debian revision suffix stripped) and abort rather than risk a downgrade.
+installed_version = node.dig('packages', 'jenkins', 'version')
+pinned_version = node['jenkins']['master']['version']
+
+if installed_version && pinned_version
+  normalize = ->(v) { Gem::Version.new(v.split('-').first) }
+  if normalize.call(pinned_version) < normalize.call(installed_version)
+    Chef::Log.fatal(
+      "Jenkins #{installed_version} is already installed, which is newer than the pinned " +
+      "node['jenkins']['master']['version'] = #{pinned_version}. Jenkins does not support " +
+      "downgrades. Set node['jenkins']['master']['version'] to #{installed_version} or newer " +
+      "before this cookbook can continue."
+    )
+    raise
+  end
+end
+
+package "jenkins" do
+  version pinned_version if pinned_version
+end
 
 if node.exist?('jenkins', 'jenkins_java_opts')
   execute "systemctl-daemon-reload" do
