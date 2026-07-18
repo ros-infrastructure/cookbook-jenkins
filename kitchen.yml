@@ -6,6 +6,8 @@ provisioner:
   name: chef_zero
   product_name: cinc
   product_version: 17
+  solo_rb:
+    environment: test
 
 
 verifier:
