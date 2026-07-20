@@ -1,0 +1,66 @@
+---
+name: ci
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches: [latest]
+  pull_request:
+    branches: ['*']
+
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@main
+      - name: Run yaml Lint
+        uses: actionshub/yamllint@main
+  kitchen-ci:
+    runs-on: ubuntu-24.04
+    name: Kitchen CI
+    strategy:
+      matrix:
+        suite:
+          - 'default'
+          - 'custom_java_opts'
+        chef_version:
+          - '17'
+      fail-fast: false
+    steps:
+      - name: Check out code
+        uses: actions/checkout@main
+      - name: Install Cinc
+        uses: actionshub/chef-install@main
+        with:
+          omnitruckUrl: omnitruck.cinc.sh
+          project: cinc-workstation
+      - name: Test-Kitchen
+        uses: actionshub/test-kitchen@main
+        with:
+          suite: ${{ matrix.suite }}
+          os: 'ubuntu-2404'
+        env:
+          CHEF_VERSION: ${{ matrix.chef_version }}
+          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+      - name: Print debug output (journalctl)
+        if: failure()
+        run: |
+            set -x
+            KITCHEN_LOCAL_YAML=kitchen.dokken.yml /usr/bin/kitchen exec \
+                ${{ matrix.suite }}-ubuntu-2404 \
+                -c "journalctl -l"
+      - name: Print debug output on failure (jenkins.log)
+        if: failure()
+        run: |
+            set -x
+            KITCHEN_LOCAL_YAML=kitchen.dokken.yml /usr/bin/kitchen exec \
+                ${{ matrix.suite }}-ubuntu-2404 \
+                -c "cat /var/log/jenkins/jenkins.log"
+      - name: Print debug output on failure (systemctl jenkins status)
+        if: failure()
+        run: |
+            set -x
+            KITCHEN_LOCAL_YAML=kitchen.dokken.yml /usr/bin/kitchen exec \
+                ${{ matrix.suite }}-ubuntu-2404 \
+                -c "systemctl status jenkins"
