@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - name: Run yaml Lint
         uses: actionshub/yamllint@main
   kitchen-ci:
@@ -30,6 +32,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@main
+        with:
+          persist-credentials: false
       - name: Install Cinc
         uses: actionshub/chef-install@main
         with:
