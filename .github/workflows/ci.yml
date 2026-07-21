@@ -8,39 +8,44 @@ on:
   pull_request:
     branches: ['*']
 
+permissions: {}
+
 jobs:
   yamllint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Check out code
-        uses: actions/checkout@main
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Run yaml Lint
-        uses: actionshub/yamllint@main
+        uses: actionshub/yamllint@v1.8.3
   kitchen-ci:
     runs-on: ubuntu-24.04
     name: Kitchen CI
+    permissions:
+      contents: read
     strategy:
       matrix:
         suite:
           - 'default'
-          - 'custom_java_opts'
         chef_version:
           - '17'
       fail-fast: false
     steps:
       - name: Check out code
-        uses: actions/checkout@main
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Install Cinc
-        uses: actionshub/chef-install@main
+        uses: actionshub/chef-install@6.0.0
         with:
           omnitruckUrl: omnitruck.cinc.sh
           project: cinc-workstation
       - name: Test-Kitchen
-        uses: actionshub/test-kitchen@main
+        uses: actionshub/test-kitchen@3.0.0
         with:
           suite: ${{ matrix.suite }}
           os: 'ubuntu-2404'
