@@ -17,11 +17,13 @@ jobs:
       contents: read
     steps:
       - name: Check out code
-        uses: actions/checkout@v7.0.1
+        # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Run yaml Lint
-        uses: actionshub/yamllint@v1.8.3
+        # v1.8.3
+        uses: actionshub/yamllint@00f4f7f756a93a38e77ea1af41a46b48fd893dcd
   kitchen-ci:
     runs-on: ubuntu-24.04
     name: Kitchen CI
@@ -36,16 +38,19 @@ jobs:
       fail-fast: false
     steps:
       - name: Check out code
-        uses: actions/checkout@v7.0.1
+        # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Install Cinc
-        uses: actionshub/chef-install@6.0.0
+        # 6.0.0
+        uses: actionshub/chef-install@f3b35943a257c25f3ca69e3b773fa4e0e99b58d6
         with:
           omnitruckUrl: omnitruck.cinc.sh
           project: cinc-workstation
       - name: Test-Kitchen
-        uses: actionshub/test-kitchen@3.0.0
+        # 3.0.0
+        uses: actionshub/test-kitchen@6e6b61feb197118be2cbbb39795c6b089afe17b5
         with:
           suite: ${{ matrix.suite }}
           os: 'ubuntu-2404'
