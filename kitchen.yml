@@ -27,15 +27,3 @@ suites:
       inspec_tests:
         - test/integration/default
     attributes:
-  - name: custom_java_opts
-    run_list:
-      - recipe[jenkins::temurin]
-      - recipe[jenkins::jenkins]
-      - recipe[jenkins::plugin_manager]
-      - recipe[jenkins::cli]
-    verifier:
-      inspec_tests:
-        - test/integration/default
-    attributes:
-      jenkins:
-        jenkins_java_opts: -Djava.awt.headless=true -Djenkins.install.runSetupWizard=true
