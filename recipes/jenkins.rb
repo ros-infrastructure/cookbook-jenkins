@@ -89,5 +89,6 @@ if node.exist?('jenkins', 'jenkins_java_opts')
 end
 
 service 'jenkins' do
-  action [:enable, :start]
+  action [:enable] 
+  delayed_action :start
 end
