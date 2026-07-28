@@ -34,7 +34,7 @@ jobs:
         suite:
           - 'default'
         chef_version:
-          - '17'
+          - '19'
       fail-fast: false
     steps:
       - name: Check out code
