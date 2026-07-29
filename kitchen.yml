@@ -29,11 +29,12 @@ suites:
     attributes:
   - name: jenkins-pinned
     run_list:
+      - recipe[jenkins::temurin]
       - recipe[jenkins::jenkins]
     verifier:
       inspec_tests:
         - test/integration/pinned-version
     attributes:
-      jenkins: 
+      jenkins:
         master:
           version: 2.401.3
