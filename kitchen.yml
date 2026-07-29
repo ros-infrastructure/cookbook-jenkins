@@ -17,7 +17,7 @@ platforms:
   - name: ubuntu-24.04
 
 suites:
-  - name: default
+  - name: jenkins-default
     run_list:
       - recipe[jenkins::temurin]
       - recipe[jenkins::jenkins]
@@ -27,3 +27,13 @@ suites:
       inspec_tests:
         - test/integration/default
     attributes:
+  - name: jenkins-pinned
+    run_list:
+      - recipe[jenkins::jenkins]
+    verifier:
+      inspec_tests:
+        - test/integration/pinned-version
+    attributes:
+      jenkins: 
+        master:
+          version: 2.401.3
