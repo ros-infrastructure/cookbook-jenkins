@@ -33,6 +33,7 @@ jobs:
       matrix:
         suite:
           - 'default'
+          - 'jenkins-pinned'
         chef_version:
           - '19'
       fail-fast: false
