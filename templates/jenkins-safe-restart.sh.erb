@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Managed by Chef. Run by the jenkins-deferred-maintenance transient timer.
+set -euo pipefail
+
+JENKINS_URL="<%= @url %>"
+CLI_JAR="/usr/local/jenkins/jars/jenkins-cli.jar"
+AUTH_ARGS=(<%= @auth_file ? "-auth @#{@auth_file}" : "" %>)
+
+# Transient calendar timers repeat; make this a one-shot.
+systemctl stop jenkins-deferred-maintenance.timer 2>/dev/null || true
+
+if ! systemctl is-active --quiet jenkins; then
+  logger -t jenkins-maintenance "Jenkins is not running; skipping safe restart."
+  exit 0
+fi
+
+if [ ! -f "$CLI_JAR" ]; then
+  logger -t jenkins-maintenance "$CLI_JAR missing; cannot safe-restart Jenkins."
+  exit 1
+fi
+
+logger -t jenkins-maintenance "Requesting Jenkins safe restart (waits for running builds)..."
+java -jar "$CLI_JAR" -s "$JENKINS_URL" "${AUTH_ARGS[@]}" safe-restart
+logger -t jenkins-maintenance "Safe restart requested."

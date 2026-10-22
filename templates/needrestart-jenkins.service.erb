@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Managed by Chef. needrestart restart hook for jenkins.service: instead of
+# restarting immediately, schedule a Jenkins safe restart for the next
+# maintenance window.
+set -euo pipefail
+
+echo "[needrestart hook] Jenkins restart deferred to <%= @calendar %> (safe restart)."
+
+# Re-arm if an earlier upgrade already scheduled one.
+systemctl stop jenkins-deferred-maintenance.timer 2>/dev/null || true
+systemctl reset-failed jenkins-deferred-maintenance.service jenkins-deferred-maintenance.timer 2>/dev/null || true
+
+systemd-run \
+  --unit=jenkins-deferred-maintenance \
+  --on-calendar="<%= @calendar %>" \
+  --description="Deferred safe restart for Jenkins" \
+  /usr/local/bin/jenkins-safe-restart
+
+# Exit 0 so needrestart considers the service handled.
+exit 0
