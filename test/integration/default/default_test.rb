@@ -1,16 +1,32 @@
-# Chef InSpec test for recipe jenkins::default
+# InSpec tests for the jenkins cookbook needrestart integration.
 
-# The Chef InSpec reference, with examples and extensive documentation, can be
-# found at https://docs.chef.io/inspec/resources/
-
-unless os.windows?
-  # This is an example test, replace with your own test.
-  describe user('root'), :skip do
-    it { should exist }
-  end
+describe file('/usr/local/bin/jenkins-safe-restart') do
+  it { should be_file }
+  it { should be_executable }
+  it { should be_owned_by 'root' }
+  its('content') { should match(/safe-restart/) }
+  its('content') { should_not match(/reboot/) }
 end
 
-# This is an example test, replace it with your own test.
-describe port(80), :skip do
-  it { should_not be_listening }
+describe file('/etc/needrestart/restart.d/jenkins.service') do
+  it { should be_file }
+  it { should be_executable }
+  it { should be_owned_by 'root' }
+  its('content') { should match(/systemd-run/) }
+  its('content') { should match(/OnCalendar|--on-calendar="\*-\*-\* 03:00:00"/) }
+end
+
+# The hook must arm exactly one timer, even when invoked repeatedly.
+describe 'needrestart hook' do
+  2.times do
+    describe command('/etc/needrestart/restart.d/jenkins.service') do
+      its('exit_status') { should eq 0 }
+    end
+  end
+
+  describe command('systemctl list-timers --all --no-legend jenkins-deferred-maintenance.timer') do
+    its('exit_status') { should eq 0 }
+    its('stdout.lines.count') { should eq 1 }
+    its('stdout') { should match(/jenkins-deferred-maintenance\.service/) }
+  end
 end

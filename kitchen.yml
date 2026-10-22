@@ -23,6 +23,7 @@ suites:
       - recipe[jenkins::jenkins]
       - recipe[jenkins::plugin_manager]
       - recipe[jenkins::cli]
+      - recipe[jenkins::needrestart]
     verifier:
       inspec_tests:
         - test/integration/default
