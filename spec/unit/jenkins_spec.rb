@@ -49,7 +49,7 @@ describe 'jenkins::jenkins' do
     it 'renders the systemd override' do
       expect(chef_run).to create_directory('/etc/systemd/system/jenkins.service.d')
       expect(chef_run).to render_file('/etc/systemd/system/jenkins.service.d/override.conf')
-        .with_content(/JAVA_OPTS='-Xmx512m'/)
+        .with_content(/JAVA_OPTS=-Xmx512m/)
     end
 
     it 'reloads systemd immediately and restarts jenkins later' do
