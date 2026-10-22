@@ -24,6 +24,25 @@ jobs:
       - name: Run yaml Lint
         # yamllint disable-line rule:line-length
         uses: actionshub/yamllint@00f4f7f756a93a38e77ea1af41a46b48fd893dcd  # v1.8.3
+  chefspec:
+    runs-on: ubuntu-24.04
+    name: ChefSpec
+    permissions:
+      contents: read
+    steps:
+      - name: Check out code
+        # yamllint disable-line rule:line-length
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install Cinc
+        # yamllint disable-line rule:line-length
+        uses: actionshub/chef-install@f3b35943a257c25f3ca69e3b773fa4e0e99b58d6  # 6.0.0
+        with:
+          omnitruckUrl: omnitruck.cinc.sh
+          project: cinc-workstation
+      - name: Run ChefSpec
+        run: cinc exec rspec spec
   kitchen-ci:
     runs-on: ubuntu-24.04
     name: Kitchen CI
