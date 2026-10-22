@@ -9,5 +9,5 @@
 
 describe package('jenkins') do
   it { should be_installed }
-  its('version') { should cmp '2.401.3' }
+  its('version') { should cmp '2.426.1' }
 end
