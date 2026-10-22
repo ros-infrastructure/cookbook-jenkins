@@ -21,3 +21,13 @@ describe service('jenkins') do
   it { should be_enabled }
   it { should be_running }
 end
+
+# No java opts attributes are set in this suite, so no systemd override
+# should be rendered.
+describe file('/etc/systemd/system/jenkins.service.d/override.conf') do
+  it { should_not exist }
+end
+
+describe user('jenkins') do
+  it { should exist }
+end

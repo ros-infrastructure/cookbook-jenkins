@@ -13,3 +13,8 @@ end
 describe package('temurin-21-jdk') do
   it { should be_installed }
 end
+
+describe command('java -version 2>&1') do
+  its('exit_status') { should eq 0 }
+  its('stdout') { should match(/Temurin|openjdk version "21/i) }
+end

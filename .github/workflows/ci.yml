@@ -34,6 +34,8 @@ jobs:
         suite:
           - 'default'
           - 'jenkins-pinned'
+          - 'custom-attrs'
+          - 'legacy-java-opts'
         chef_version:
           - '19'
       fail-fast: false

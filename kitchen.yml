@@ -38,3 +38,27 @@ suites:
       jenkins:
         master:
           version: 2.401.3
+  - name: legacy-java-opts
+    run_list:
+      - recipe[jenkins::temurin]
+      - recipe[jenkins::jenkins]
+    verifier:
+      inspec_tests:
+        - test/integration/legacy-java-opts
+    attributes:
+      jenkins:
+        master:
+          java_opts: "-Xmx256m"
+  - name: custom-attrs
+    run_list:
+      - recipe[jenkins::temurin]
+      - recipe[jenkins::jenkins]
+      - recipe[jenkins::plugin_manager]
+    verifier:
+      inspec_tests:
+        - test/integration/custom-attrs
+    attributes:
+      jenkins:
+        lts: false
+        jenkins_java_opts: "-Xmx512m -Xms512m"
+        plugin_manager_version: "2.12.15"
