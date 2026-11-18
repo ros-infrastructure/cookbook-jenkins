@@ -4,8 +4,11 @@ directory '/etc/apt/keyrings' do
   recursive true
 end
 
+# Without the checksum every run asks pkg.jenkins.io for the key, and fails
+# if it is unreachable. Same file in debian and debian-stable.
 remote_file "/etc/apt/keyrings/jenkins-keyring.asc" do
   source "https://pkg.jenkins.io/#{repository}/jenkins.io-2026.key"
+  checksum 'd3b7e4096fed593eebdba3a2554c8cb9aafebe736910584e69e924b143e7b3d4'
   mode '0644'
   owner 'root'
   group 'root'
