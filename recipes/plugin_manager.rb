@@ -9,4 +9,5 @@ remote_file "/usr/local/jenkins/jars/jenkins-plugin-manager.jar" do
   owner "jenkins"
   group "jenkins"
   mode "0644"
+  checksum node["jenkins"]["plugin_manager_checksums"][node["jenkins"]["plugin_manager_version"]]
 end
