@@ -17,7 +17,7 @@ platforms:
   - name: ubuntu-24.04
 
 suites:
-  - name: default
+  - name: jenkins-default
     run_list:
       - recipe[jenkins::temurin]
       - recipe[jenkins::jenkins]
@@ -27,3 +27,38 @@ suites:
       inspec_tests:
         - test/integration/default
     attributes:
+  - name: jenkins-pinned
+    run_list:
+      - recipe[jenkins::temurin]
+      - recipe[jenkins::jenkins]
+    verifier:
+      inspec_tests:
+        - test/integration/pinned-version
+    attributes:
+      jenkins:
+        master:
+          version: 2.426.1
+  - name: legacy-java-opts
+    run_list:
+      - recipe[jenkins::temurin]
+      - recipe[jenkins::jenkins]
+    verifier:
+      inspec_tests:
+        - test/integration/legacy-java-opts
+    attributes:
+      jenkins:
+        master:
+          java_opts: "-Xmx256m"
+  - name: custom-attrs
+    run_list:
+      - recipe[jenkins::temurin]
+      - recipe[jenkins::jenkins]
+      - recipe[jenkins::plugin_manager]
+    verifier:
+      inspec_tests:
+        - test/integration/custom-attrs
+    attributes:
+      jenkins:
+        lts: false
+        jenkins_java_opts: "-Xmx512m -Xms512m"
+        plugin_manager_version: "2.12.15"
